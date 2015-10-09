@@ -36,7 +36,9 @@ object Main extends App with DatabaseSchema with InitialData {
 
   printResults(dao.talksWithRooms2)
 
-  def printResults[T](f: Future[Seq[T]]): Unit = {
+  printResults(dao.countPositiveVotesByTalk)
+
+  def printResults[T](f: Future[Iterable[T]]): Unit = {
     Await.result(f, Duration.Inf).foreach(println)
     println()
   }

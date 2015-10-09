@@ -44,4 +44,21 @@ class ConferenceDao(db: Database) extends DatabaseSchema {
 
     db.run(query.result).map(_.map(TalkWithRoom.tupled))
   }
+
+  def countPositiveVotesByTalk: Future[Map[String, Int]] = {
+    val talksWithPositiveVotes = for {
+      (t, v) <- talks join votes.filter(_.positive) on (_.id === _.talkId)
+    } yield (t.title, v.id)
+
+    val grouped = talksWithPositiveVotes.groupBy(_._1)
+
+    val counted = grouped.map { case (title, voteIds) => (title, voteIds.size) }
+
+    val sorted = counted.sortBy(_._2.desc)
+    sorted.result.statements.foreach(println)
+
+    val result: Future[Seq[(String, Int)]] = db.run(sorted.result)
+
+    result.map(_.toMap)
+  }
 }
