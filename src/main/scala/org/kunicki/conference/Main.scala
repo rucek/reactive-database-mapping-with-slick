@@ -38,6 +38,10 @@ object Main extends App with DatabaseSchema with InitialData {
 
   printResults(dao.countPositiveVotesByTalk)
 
+  printResults(dao.findTalksWithPlainSql)
+
+  printResults(dao.findTalksWithTypedSql)
+
   def printResults[T](f: Future[Iterable[T]]): Unit = {
     Await.result(f, Duration.Inf).foreach(println)
     println()

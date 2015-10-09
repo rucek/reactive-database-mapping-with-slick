@@ -1,7 +1,9 @@
 package org.kunicki.conference.db
 
-import org.kunicki.conference.domain.{TalkWithRoom, Vote}
+import org.kunicki.conference.domain.{Talk, TalkWithRoom, Vote}
+import slick.backend.StaticDatabaseConfig
 import slick.driver.H2Driver.api._
+import slick.jdbc.GetResult
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -60,5 +62,18 @@ class ConferenceDao(db: Database) extends DatabaseSchema {
     val result: Future[Seq[(String, Int)]] = db.run(sorted.result)
 
     result.map(_.toMap)
+  }
+
+  def findTalksWithPlainSql: Future[Seq[Talk]] = {
+    implicit val getTalkResult = GetResult(r => Talk(r.nextInt(), r.nextInt(), r.nextString()))
+
+    val action = sql"SELECT * FROM TALKS".as[Talk]
+    db.run(action)
+  }
+
+  @StaticDatabaseConfig("file:src/main/resources/application.conf#tsql")
+  def findTalksWithTypedSql: Future[Seq[Talk]] = {
+    val typedAction = tsql"select * from talks"
+    db.run(typedAction).map(_.map(Talk.tupled))
   }
 }
