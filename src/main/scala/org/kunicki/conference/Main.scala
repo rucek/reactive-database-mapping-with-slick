@@ -23,5 +23,4 @@ object Main extends App with DatabaseSchema with InitialData with Magic {
 
   printResults(voter.vote)
   printResults(dao.makeAllVotesPositive.flatMap(_ => dao.findAllVotes))
-  printResults(dao.countPositiveVotesByTalk)
 }
