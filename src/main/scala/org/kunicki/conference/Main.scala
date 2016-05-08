@@ -22,5 +22,4 @@ object Main extends App with DatabaseSchema with InitialData with Magic {
   val voter = new Voter(dao)
 
   printResults(voter.vote)
-  printResults(dao.makeAllVotesPositive.flatMap(_ => dao.findAllVotes))
 }

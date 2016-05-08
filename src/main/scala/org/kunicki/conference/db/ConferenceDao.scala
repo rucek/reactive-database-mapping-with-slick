@@ -33,10 +33,4 @@ class ConferenceDao(db: Database) extends DatabaseSchema {
   }
 
   def findAllVotes: Future[Seq[Vote]] = db.run(votes.result)
-
-  def makeAllVotesPositive = {
-    val query = votes.filterNot(_.positive).map(_.positive).update(true)
-    query.statements.foreach(println)
-    db.run(query)
-  }
 }
