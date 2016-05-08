@@ -1,6 +1,6 @@
 package org.kunicki.conference.db
 
-import org.kunicki.conference.domain.{TalkWithRoom, Vote}
+import org.kunicki.conference.domain.TalkWithRoom
 import slick.driver.H2Driver.api._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -26,11 +26,4 @@ class ConferenceDao(db: Database) extends DatabaseSchema {
     query.result.statements.foreach(println)
     db.run(query.result).map(_.map(TalkWithRoom.tupled))
   }
-
-  def addVote(vote: Vote): Future[Vote] = {
-    val query = (votes returning votes.map(_.id) into ((vote, id) => vote.copy(id = Some(id)))) += vote
-    db.run(query)
-  }
-
-  def findAllVotes: Future[Seq[Vote]] = db.run(votes.result)
 }

@@ -18,8 +18,4 @@ object Main extends App with DatabaseSchema with InitialData with Magic {
 
   printResults(dao.talksWithRooms)
   printResults(dao.talksWithRooms2)
-
-  val voter = new Voter(dao)
-
-  printResults(voter.vote)
 }
